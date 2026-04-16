@@ -1,0 +1,1585 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OJT DTR Calculator</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .container {
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            max-width: 1000px;
+            width: 100%;
+            padding: 40px;
+        }
+
+        h1 {
+            color: #333;
+            margin-bottom: 30px;
+            text-align: center;
+            font-size: 2.5em;
+        }
+
+        .stats-section {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-bottom: 40px;
+        }
+
+        .stat-card {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+        }
+
+        .stat-label {
+            font-size: 0.9em;
+            opacity: 0.9;
+            margin-bottom: 10px;
+        }
+
+        .stat-value {
+            font-size: 2em;
+            font-weight: bold;
+        }
+
+        .input-section {
+            background: #f8f9fa;
+            padding: 25px;
+            border-radius: 10px;
+            margin-bottom: 30px;
+        }
+
+        .input-row {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+
+        .input-group {
+            display: flex;
+            flex-direction: column;
+        }
+
+        label {
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 8px;
+            font-size: 0.95em;
+        }
+
+        input[type="time"], input[type="date"] {
+            padding: 10px 12px;
+            border: 2px solid #ddd;
+            border-radius: 6px;
+            font-size: 1em;
+            transition: border-color 0.3s;
+        }
+
+        input[type="time"]:focus, input[type="date"]:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        .time-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-bottom: 15px;
+        }
+
+        .button-group {
+            display: flex;
+            gap: 10px;
+            margin-top: 20px;
+        }
+
+        .toolbar-actions {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .quick-select-buttons {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 10px;
+            margin-top: 15px;
+            padding-top: 15px;
+            border-top: 1px solid #ddd;
+        }
+
+        .quick-btn {
+            padding: 10px 16px;
+            border: 2px solid #667eea;
+            background: white;
+            color: #667eea;
+            border-radius: 6px;
+            font-size: 0.95em;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .quick-btn:hover {
+            background: #667eea;
+            color: white;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.3);
+        }
+
+        button {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 6px;
+            font-size: 1em;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .add-btn {
+            background: #667eea;
+            color: white;
+            flex: 1;
+        }
+
+        .add-btn:hover {
+            background: #5568d3;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        .clear-btn {
+            background: #e74c3c;
+            color: white;
+        }
+
+        .clear-btn:hover {
+            background: #c0392b;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(231, 76, 60, 0.4);
+        }
+
+        .print-btn {
+            background: #1f2937;
+            color: white;
+            box-shadow: 0 5px 15px rgba(31, 41, 55, 0.2);
+        }
+
+        .print-btn:hover {
+            background: #111827;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(31, 41, 55, 0.28);
+        }
+
+        .records-section {
+            margin-top: 40px;
+        }
+
+        .records-section h2 {
+            color: #333;
+            margin-bottom: 20px;
+            font-size: 1.5em;
+        }
+
+        .records-toolbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 10px;
+            flex-wrap: wrap;
+            margin-bottom: 15px;
+        }
+
+        .view-buttons {
+            display: flex;
+            gap: 8px;
+        }
+
+        .view-btn {
+            background: #fff;
+            color: #667eea;
+            border: 2px solid #667eea;
+            padding: 8px 14px;
+            border-radius: 6px;
+            font-size: 0.9em;
+            font-weight: 600;
+        }
+
+        .view-btn.active,
+        .view-btn:hover {
+            background: #667eea;
+            color: white;
+        }
+
+        .calendar-nav {
+            display: none;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .calendar-nav button {
+            background: #667eea;
+            color: #fff;
+            padding: 8px 12px;
+            border-radius: 6px;
+            font-size: 0.9em;
+        }
+
+        .calendar-title {
+            font-weight: 700;
+            color: #333;
+            min-width: 170px;
+            text-align: center;
+        }
+
+        .calendar-grid {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 8px;
+        }
+
+        .calendar-header {
+            background: #667eea;
+            color: #fff;
+            padding: 8px;
+            text-align: center;
+            border-radius: 6px;
+            font-size: 0.85em;
+            font-weight: 600;
+        }
+
+        .calendar-cell {
+            border: 1px solid #e5e5e5;
+            border-radius: 8px;
+            min-height: 100px;
+            padding: 8px;
+            background: #fafafa;
+        }
+
+        .calendar-cell.empty {
+            background: #f1f1f1;
+        }
+
+        .calendar-day-number {
+            font-weight: 700;
+            color: #444;
+            margin-bottom: 6px;
+            font-size: 0.9em;
+        }
+
+        .calendar-entry {
+            background: #eef1ff;
+            border-left: 3px solid #667eea;
+            border-radius: 4px;
+            padding: 6px;
+            font-size: 0.78em;
+            color: #333;
+            line-height: 1.35;
+        }
+
+        .calendar-entry .hours {
+            font-weight: 700;
+            color: #4458d6;
+        }
+
+        .special-label {
+            display: inline-block;
+            background: #fff3cd;
+            color: #856404;
+            border: 1px solid #ffeeba;
+            border-radius: 4px;
+            padding: 4px 8px;
+            font-size: 0.78em;
+            font-weight: 700;
+        }
+
+        .special-label-green {
+            background: #d4edda;
+            color: #155724;
+            border-color: #c3e6cb;
+        }
+
+        .special-label-yellow {
+            background: #fff3cd;
+            color: #856404;
+            border-color: #ffeeba;
+        }
+
+        .calendar-entry-green {
+            background: #d4edda;
+            border-left-color: #28a745;
+        }
+
+        .calendar-entry-yellow {
+            background: #fff3cd;
+            border-left-color: #f0ad4e;
+        }
+
+        .calendar-entry-green .hours {
+            color: #155724;
+        }
+
+        .calendar-entry-yellow .hours {
+            color: #856404;
+        }
+
+        .special-label-red {
+            background: #f8d7da;
+            color: #721c24;
+            border-color: #f5c6cb;
+        }
+
+        .calendar-entry-red {
+            background: #f8d7da;
+            border-left-color: #dc3545;
+        }
+
+        .calendar-entry-red .hours {
+            color: #721c24;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background: white;
+        }
+
+        th {
+            background: #667eea;
+            color: white;
+            padding: 12px;
+            text-align: left;
+            font-weight: 600;
+        }
+
+        td {
+            padding: 12px;
+            border-bottom: 1px solid #eee;
+        }
+
+        tr:hover {
+            background: #f8f9fa;
+        }
+
+        .delete-btn {
+            background: #e74c3c;
+            color: white;
+            padding: 6px 12px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 0.9em;
+            transition: all 0.3s;
+        }
+
+        .delete-btn:hover {
+            background: #c0392b;
+        }
+
+        .no-records {
+            text-align: center;
+            color: #999;
+            padding: 40px 20px;
+            font-style: italic;
+        }
+
+        .goal-message {
+            padding: 15px;
+            border-radius: 6px;
+            margin-top: 20px;
+            font-weight: 600;
+            text-align: center;
+        }
+
+        .goal-reached {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+
+        .goal-in-progress {
+            background: #fff3cd;
+            color: #856404;
+            border: 1px solid #ffeeba;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 20px;
+            background: #eee;
+            border-radius: 10px;
+            overflow: hidden;
+            margin-top: 10px;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
+            transition: width 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 0.8em;
+            font-weight: bold;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 20px;
+            }
+
+            h1 {
+                font-size: 1.8em;
+            }
+
+            .stats-section {
+                grid-template-columns: 1fr 1fr;
+            }
+
+            table {
+                font-size: 0.9em;
+            }
+
+            td, th {
+                padding: 8px;
+            }
+
+            .calendar-cell {
+                min-height: 85px;
+            }
+
+            .calendar-title {
+                min-width: 130px;
+                font-size: 0.9em;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>📋 OJT DTR Calculator</h1>
+
+        <div class="stats-section">
+            <div class="stat-card">
+                <div class="stat-label">Total Hours</div>
+                <div class="stat-value" id="totalHours">0.0</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-label">This Month Hours</div>
+                <div class="stat-value" id="monthTotalHours">0.0</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-label">Remaining Hours</div>
+                <div class="stat-value" id="remainingHours">162.0</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-label">Days Left (8hrs/day)</div>
+                <div class="stat-value" id="remainingDays">20</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-label">Expected End Date</div>
+                <div class="stat-value" id="expectedEndDate" style="font-size: 1.1em;">-</div>
+            </div>
+        </div>
+
+        <div class="progress-bar">
+            <div class="progress-fill" id="progressFill" style="width: 0%">0%</div>
+        </div>
+
+        <div id="goalMessage"></div>
+
+        <div class="input-section">
+            <h2 style="margin-bottom: 20px; color: #333;">Add Daily Time Record</h2>
+
+            <div class="input-row">
+                <div class="input-group">
+                    <label for="employeeNameInput">Employee Name</label>
+                    <input type="text" id="employeeNameInput" value="JOSHUA EAN C. VALERA" placeholder="Enter employee name">
+                </div>
+                <div class="input-group">
+                    <label for="companyInput">Company</label>
+                    <input type="text" id="companyInput" value="ICTU-CSPC" placeholder="Enter company name">
+                </div>
+            </div>
+            
+            <div class="input-group">
+                <label for="dateInput">📅 Date</label>
+                <input type="date" id="dateInput">
+            </div>
+
+            <h3 style="margin-top: 20px; margin-bottom: 15px; color: #555; font-size: 1.1em;">Morning Shift</h3>
+            <div class="time-row">
+                <div class="input-group">
+                    <label for="morningTimeIn">Time In</label>
+                    <input type="time" id="morningTimeIn" value="08:00">
+                </div>
+                <div class="input-group">
+                    <label for="morningTimeOut">Time Out</label>
+                    <input type="time" id="morningTimeOut" value="12:00">
+                </div>
+            </div>
+
+            <h3 style="margin-top: 20px; margin-bottom: 15px; color: #555; font-size: 1.1em;">Afternoon Shift</h3>
+            <div class="time-row">
+                <div class="input-group">
+                    <label for="afternoonTimeIn">Time In</label>
+                    <input type="time" id="afternoonTimeIn" value="13:00">
+                </div>
+                <div class="input-group">
+                    <label for="afternoonTimeOut">Time Out</label>
+                    <input type="time" id="afternoonTimeOut" value="17:00">
+                </div>
+            </div>
+
+            <div class="quick-select-buttons">
+                <button class="quick-btn" onclick="setWholeDay()">📅 Whole Day</button>
+                <button class="quick-btn" onclick="setHalfDayAM()">☀️ Half Day (AM)</button>
+                <button class="quick-btn" onclick="setHalfDayPM()">🌤️ Half Day (PM)</button>
+                <button class="quick-btn" onclick="clearTimes()">🔄 Clear Times</button>
+            </div>
+
+            <div class="button-group">
+                <button class="add-btn" onclick="addRecord()">✅ Add Record</button>
+                <button class="clear-btn" onclick="clearAllRecords()">🗑️ Clear All</button>
+            </div>
+        </div>
+
+        <div class="records-section">
+            <h2>📝 Time Records</h2>
+            <div class="records-toolbar">
+                <div class="view-buttons">
+                    <button id="tableViewBtn" class="view-btn" onclick="setViewMode('table')">Table Mode</button>
+                    <button id="calendarViewBtn" class="view-btn active" onclick="setViewMode('calendar')">Calendar Mode</button>
+                </div>
+                <div class="toolbar-actions">
+                    <div class="calendar-nav" id="calendarNav">
+                        <button onclick="changeCalendarMonth(-1)">◀</button>
+                        <div class="calendar-title" id="calendarTitle"></div>
+                        <button onclick="changeCalendarMonth(1)">▶</button>
+                    </div>
+                    <button class="print-btn" onclick="printDTR()">Print DTR</button>
+                </div>
+            </div>
+            <div id="recordsContainer"></div>
+        </div>
+    </div>
+
+    <script>
+        const TARGET_HOURS = 162;
+        const API_URL = 'http://localhost:3000/api/records';
+        const DEFAULT_EMPLOYEE_NAME = 'JOSHUA EAN C. VALERA';
+        const DEFAULT_COMPANY = 'ICTU-CSPC';
+        let records = [];
+        let currentViewMode = 'table';
+        let currentCalendarDate = new Date();
+
+        function escapeHtml(value) {
+            return String(value ?? '')
+                .replace(/&/g, '&amp;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;')
+                .replace(/"/g, '&quot;')
+                .replace(/'/g, '&#39;');
+        }
+
+        function getEmployeeName() {
+            return document.getElementById('employeeNameInput').value.trim() || DEFAULT_EMPLOYEE_NAME;
+        }
+
+        function getCompanyName() {
+            return document.getElementById('companyInput').value.trim() || DEFAULT_COMPANY;
+        }
+
+        function getRecordForDate(dateText) {
+            return records.find((record) => record.date === dateText) || null;
+        }
+
+        function formatPrintTime(value) {
+            return value ? value : '';
+        }
+
+        function buildDtrMonthRows(year, monthIndex) {
+            const daysInMonth = new Date(year, monthIndex + 1, 0).getDate();
+            const rows = [];
+
+            for (let day = 1; day <= daysInMonth; day++) {
+                const dateText = `${year}-${String(monthIndex + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
+                const record = getRecordForDate(dateText);
+                const dateLabel = new Date(`${dateText}T00:00:00`).toLocaleDateString(undefined, {
+                    month: '2-digit',
+                    day: '2-digit',
+                    year: 'numeric'
+                });
+
+                rows.push({
+                    dateLabel,
+                    morningIn: formatPrintTime(record?.morningIn),
+                    morningOut: formatPrintTime(record?.morningOut),
+                    afternoonIn: formatPrintTime(record?.afternoonIn),
+                    afternoonOut: formatPrintTime(record?.afternoonOut),
+                    totalHours: record ? record.totalHours.toFixed(2) : '',
+                    remarks: record ? 'Worked' : ''
+                });
+            }
+
+            return rows;
+        }
+
+        function calculateMonthlyTotalHours(year, monthIndex) {
+            return records
+                .filter((record) => {
+                    const recordDate = new Date(`${record.date}T00:00:00`);
+                    return recordDate.getFullYear() === year && recordDate.getMonth() === monthIndex;
+                })
+                .reduce((sum, record) => sum + Number(record.totalHours || 0), 0);
+        }
+
+        function buildPrintCopyHtml({ employeeName, companyName, monthLabel, monthlyTotalHours, rows, copyLabel }) {
+            const rowHtml = rows.map((row) => `
+                <tr>
+                    <td class="date-cell">${escapeHtml(row.dateLabel)}</td>
+                    <td>${escapeHtml(row.morningIn)}</td>
+                    <td>${escapeHtml(row.morningOut)}</td>
+                    <td>${escapeHtml(row.afternoonIn)}</td>
+                    <td>${escapeHtml(row.afternoonOut)}</td>
+                    <td class="hours-cell">${escapeHtml(row.totalHours)}</td>
+                    <td>${escapeHtml(row.remarks)}</td>
+                </tr>
+            `).join('');
+
+            return `
+                <section class="dtr-copy">
+                    <div class="copy-label">${escapeHtml(copyLabel)}</div>
+                    <div class="dtr-header">
+                        <div class="company-name">${escapeHtml(companyName)}</div>
+                        <div class="dtr-title">DAILY TIME RECORD</div>
+                        <div class="dtr-month">${escapeHtml(monthLabel)}</div>
+                    </div>
+
+                    <div class="employee-row">
+                        <div><span class="field-label">Emp. Name:</span> ${escapeHtml(employeeName)}</div>
+                        <div><span class="field-label">Company:</span> ${escapeHtml(companyName)}</div>
+                    </div>
+
+                    <div class="month-total-row">
+                        <span class="field-label">Total Hours Worked This Month:</span>
+                        <span class="month-total-value">${escapeHtml(monthlyTotalHours.toFixed(2))} hrs</span>
+                    </div>
+
+                    <table class="dtr-table">
+                        <thead>
+                            <tr>
+                                <th style="width: 15%">Date</th>
+                                <th style="width: 12%">AM In</th>
+                                <th style="width: 12%">AM Out</th>
+                                <th style="width: 12%">PM In</th>
+                                <th style="width: 12%">PM Out</th>
+                                <th style="width: 10%">Total Hrs</th>
+                                <th style="width: 17%">Remarks</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            ${rowHtml}
+                        </tbody>
+                    </table>
+                </section>
+            `;
+        }
+
+        function printDTR() {
+            const employeeName = getEmployeeName();
+            const companyName = getCompanyName();
+            const year = currentCalendarDate.getFullYear();
+            const monthIndex = currentCalendarDate.getMonth();
+            const monthLabel = currentCalendarDate.toLocaleDateString(undefined, {
+                month: 'long',
+                year: 'numeric'
+            });
+            const rows = buildDtrMonthRows(year, monthIndex);
+            const monthlyTotalHours = calculateMonthlyTotalHours(year, monthIndex);
+            const printWindow = window.open('', '_blank', 'width=1400,height=900');
+
+            if (!printWindow) {
+                alert('Please allow pop-ups to print the DTR.');
+                return;
+            }
+
+            const printHtml = `
+                <!DOCTYPE html>
+                <html lang="en">
+                <head>
+                    <meta charset="UTF-8">
+                    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+                    <title>DTR ${escapeHtml(monthLabel)}</title>
+                    <style>
+                        @page {
+                            size: portrait;
+                            margin: 0.35in;
+                        }
+
+                        * {
+                            box-sizing: border-box;
+                        }
+
+                        body {
+                            margin: 0;
+                            font-family: Arial, Helvetica, sans-serif;
+                            color: #222;
+                            background: #fff;
+                        }
+
+                        .page {
+                            display: grid;
+                            grid-template-columns: 1fr 1fr;
+                            gap: 10px;
+                            width: 100%;
+                        }
+
+                        .print-sheet {
+                            width: 100%;
+                        }
+
+                        .dtr-copy {
+                            border: 1px solid #444;
+                            padding: 10px 10px 12px;
+                            min-height: 8.5in;
+                            position: relative;
+                        }
+
+                        .copy-label {
+                            position: absolute;
+                            top: 6px;
+                            right: 8px;
+                            font-size: 10px;
+                            text-transform: uppercase;
+                            letter-spacing: 0.08em;
+                            color: #666;
+                        }
+
+                        .dtr-header {
+                            text-align: center;
+                            margin-bottom: 8px;
+                            padding-top: 8px;
+                        }
+
+                        .company-name {
+                            font-size: 14px;
+                            font-weight: 700;
+                            letter-spacing: 0.05em;
+                            text-transform: uppercase;
+                        }
+
+                        .dtr-title {
+                            font-size: 20px;
+                            font-weight: 700;
+                            margin-top: 2px;
+                        }
+
+                        .dtr-month {
+                            font-size: 12px;
+                            margin-top: 2px;
+                            text-transform: uppercase;
+                            letter-spacing: 0.04em;
+                        }
+
+                        .employee-row {
+                            display: flex;
+                            justify-content: space-between;
+                            gap: 10px;
+                            margin: 8px 0 10px;
+                            font-size: 11px;
+                            border-bottom: 1px solid #666;
+                            padding-bottom: 6px;
+                        }
+
+                        .month-total-row {
+                            display: flex;
+                            justify-content: space-between;
+                            gap: 10px;
+                            margin: 0 0 10px;
+                            font-size: 11px;
+                            border-bottom: 1px solid #666;
+                            padding-bottom: 6px;
+                        }
+
+                        .month-total-value {
+                            font-weight: 700;
+                        }
+
+                        .field-label {
+                            font-weight: 700;
+                            text-transform: uppercase;
+                        }
+
+                        .dtr-table {
+                            width: 100%;
+                            border-collapse: collapse;
+                            table-layout: fixed;
+                            font-size: 9px;
+                        }
+
+                        .dtr-table th,
+                        .dtr-table td {
+                            border: 1px solid #666;
+                            padding: 3px 4px;
+                            text-align: center;
+                            vertical-align: middle;
+                            word-break: break-word;
+                        }
+
+                        .dtr-table th {
+                            font-size: 9px;
+                            font-weight: 700;
+                            background: #efefef;
+                        }
+
+                        .date-cell {
+                            font-size: 9px;
+                        }
+
+                        .hours-cell {
+                            font-weight: 700;
+                        }
+
+                        .signatory-section {
+                            display: flex;
+                            justify-content: space-between;
+                            gap: 24px;
+                            margin-top: 18px;
+                            padding-top: 10px;
+                        }
+
+                        .signatory-block {
+                            flex: 1;
+                            text-align: center;
+                        }
+
+                        .signatory-block.cortez {
+                            margin-top: 65px;
+                        }
+
+                        .signatory-line {
+                            border-top: 1px solid #444;
+                            margin: 30px 18px 8px;
+                        }
+
+                        .signatory-name {
+                            font-size: 11px;
+                            font-weight: 700;
+                            text-transform: uppercase;
+                            letter-spacing: 0.03em;
+                        }
+
+                        .signatory-title {
+                            font-size: 10px;
+                            margin-top: 2px;
+                            text-transform: uppercase;
+                            color: #444;
+                        }
+
+                        @media print {
+                            .copy-label {
+                                display: none;
+                            }
+                        }
+                    </style>
+                </head>
+                <body>
+                    <div class="print-sheet">
+                        <div class="page">
+                            ${buildPrintCopyHtml({ employeeName, companyName, monthLabel, monthlyTotalHours, rows, copyLabel: 'Copy 1' })}
+                            ${buildPrintCopyHtml({ employeeName, companyName, monthLabel, monthlyTotalHours, rows, copyLabel: 'Copy 2' })}
+                        </div>
+
+                        <div class="signatory-section">
+                            <div class="signatory-block">
+                                <div class="signatory-line"></div>
+                                <div class="signatory-name">${escapeHtml(employeeName)}</div>
+                                <div class="signatory-title">OJT Employee</div>
+                            </div>
+
+                            <div class="signatory-block cortez">
+                                <div class="signatory-line"></div>
+                                <div class="signatory-name">MR. REY T. CORTEZ</div>
+                                <div class="signatory-title">Department Head</div>
+                            </div>
+
+                            <div class="signatory-block">
+                                <div class="signatory-line"></div>
+                                <div class="signatory-name">MR. DANJHO ORBITA</div>
+                                <div class="signatory-title">OJT Supervisor</div>
+                            </div>
+                        </div>
+                    </div>
+                </body>
+                </html>
+            `;
+
+            printWindow.document.open();
+            printWindow.document.write(printHtml);
+            printWindow.document.close();
+            setTimeout(() => {
+                printWindow.focus();
+                printWindow.print();
+            }, 250);
+        }
+
+        function saveProfileInputs() {
+            localStorage.setItem('dtrEmployeeName', getEmployeeName());
+            localStorage.setItem('dtrCompanyName', getCompanyName());
+        }
+
+        function loadProfileInputs() {
+            const savedEmployeeName = localStorage.getItem('dtrEmployeeName');
+            const savedCompanyName = localStorage.getItem('dtrCompanyName') || DEFAULT_COMPANY;
+
+            document.getElementById('employeeNameInput').value = savedEmployeeName || DEFAULT_EMPLOYEE_NAME;
+            document.getElementById('companyInput').value = savedCompanyName;
+        }
+
+        // Load data from database
+        async function loadRecords() {
+            try {
+                const response = await fetch(API_URL);
+                if (response.ok) {
+                    records = await response.json();
+                    records.sort((a, b) => new Date(b.date) - new Date(a.date));
+                    renderRecords();
+                    updateStats();
+                } else {
+                    console.error('Failed to load records');
+                    alert('Error loading records. Make sure the server is running.');
+                }
+            } catch (error) {
+                console.error('Error loading records:', error);
+                alert('Cannot connect to server. Make sure it\'s running on localhost:3000');
+            }
+        }
+
+        // Save data to database (via API)
+        async function saveRecords() {
+            // Data is saved immediately in addRecord function
+        }
+
+        // Calculate overlap between input time and a fixed computable window.
+        function calculateHoursWithinWindow(timeIn, timeOut, windowStart, windowEnd) {
+            if (!timeIn || !timeOut) return 0;
+
+            const [inHour, inMin] = timeIn.split(':').map(Number);
+            const [outHour, outMin] = timeOut.split(':').map(Number);
+
+            let inMinutes = inHour * 60 + inMin;
+            let outMinutes = outHour * 60 + outMin;
+
+            // Keep existing behavior for cross-midnight entries.
+            if (outMinutes < inMinutes) {
+                outMinutes += 24 * 60;
+            }
+
+            const effectiveStart = Math.max(inMinutes, windowStart);
+            const effectiveEnd = Math.min(outMinutes, windowEnd);
+
+            if (effectiveEnd <= effectiveStart) {
+                return 0;
+            }
+
+            return (effectiveEnd - effectiveStart) / 60;
+        }
+
+        function isTesdaWorldSkillsRegional(dateText) {
+            const date = new Date(`${dateText}T00:00:00`);
+            if (Number.isNaN(date.getTime())) return false;
+
+            const isMarch = date.getMonth() === 2;
+            const isApril = date.getMonth() === 3;
+            const isFriday = date.getDay() === 5;
+            const startsMarch13 = date.getDate() >= 13;
+
+            return (isMarch && isFriday && startsMarch13) || (isApril && isFriday);
+        }
+
+        function isTesdaWorldSkillsBicolCompetition(dateText) {
+            const date = new Date(`${dateText}T00:00:00`);
+            if (Number.isNaN(date.getTime())) return false;
+
+            const isMarch = date.getMonth() === 2;
+            const day = date.getDate();
+
+            return isMarch && day >= 25 && day <= 27;
+        }
+
+        function isMorningMeetingDate(dateText) {
+            const date = new Date(`${dateText}T00:00:00`);
+            if (Number.isNaN(date.getTime())) return false;
+
+            return date.getMonth() === 2 && date.getDate() === 23;
+        }
+
+        function isHolyWeekNoDuty(dateText) {
+            const date = new Date(`${dateText}T00:00:00`);
+            if (Number.isNaN(date.getTime())) return false;
+
+            const year = date.getFullYear();
+            const holyWeekStart = `${year}-04-01`;
+            const holyWeekEnd = `${year}-04-05`;
+
+            return dateText >= holyWeekStart && dateText <= holyWeekEnd;
+        }
+
+        function getNoDutyInfo(dateText) {
+            if (isHolyWeekNoDuty(dateText)) {
+                return {
+                    label: 'HOLY WEEK',
+                    color: 'red'
+                };
+            }
+
+            if (isTesdaWorldSkillsBicolCompetition(dateText)) {
+                return {
+                    label: 'TESDA WORLDSKILLS BICOL COMPETITION',
+                    color: 'green'
+                };
+            }
+
+            if (isTesdaWorldSkillsRegional(dateText)) {
+                return {
+                    label: 'TESDA WORLDSKILLS TRAINING',
+                    color: 'yellow'
+                };
+            }
+
+            return null;
+        }
+
+        function getTesdaWorldSkillsDates(year) {
+            const dates = [];
+            for (let day = 13; day <= 31; day++) {
+                const date = new Date(year, 2, day);
+                if (date.getMonth() !== 2) continue;
+                if (date.getDay() === 5) {
+                    dates.push(date.toISOString().split('T')[0]);
+                }
+            }
+
+            for (let day = 1; day <= 30; day++) {
+                const date = new Date(year, 3, day);
+                if (date.getMonth() !== 3) continue;
+                if (date.getDay() === 5) {
+                    dates.push(date.toISOString().split('T')[0]);
+                }
+            }
+
+            return dates;
+        }
+
+        function getBicolCompetitionDates(year) {
+            const dates = [];
+            for (let day = 25; day <= 27; day++) {
+                const date = new Date(year, 2, day);
+                if (date.getMonth() !== 2) continue;
+                dates.push(date.toISOString().split('T')[0]);
+            }
+            return dates;
+        }
+
+        function getHolyWeekDates(year) {
+            const dates = [];
+            const start = new Date(year, 3, 1);
+            const end = new Date(year, 3, 5);
+            const cursor = new Date(start);
+
+            while (cursor <= end) {
+                dates.push(cursor.toISOString().split('T')[0]);
+                cursor.setDate(cursor.getDate() + 1);
+            }
+
+            return dates;
+        }
+
+        function getAllNoDutyDates(year) {
+            const merged = new Set([
+                ...getHolyWeekDates(year),
+                ...getTesdaWorldSkillsDates(year),
+                ...getBicolCompetitionDates(year)
+            ]);
+
+            return Array.from(merged);
+        }
+
+        function isWeekend(date) {
+            const day = date.getDay();
+            return day === 0 || day === 6;
+        }
+
+        function formatDateText(date) {
+            return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`;
+        }
+
+        function calculateExpectedEndDate(remainingHours) {
+            if (remainingHours <= 0) {
+                return 'Completed';
+            }
+
+            const latestRecordDate = records.length > 0
+                ? new Date(`${records[0].date}T00:00:00`)
+                : null;
+
+            const today = new Date();
+            today.setHours(0, 0, 0, 0);
+
+            let cursor = new Date(today);
+            if (latestRecordDate && latestRecordDate > cursor) {
+                cursor = new Date(latestRecordDate);
+            }
+
+            let hoursLeft = remainingHours;
+            let guard = 0;
+
+            while (hoursLeft > 0 && guard < 2000) {
+                const dateText = formatDateText(cursor);
+                const noDuty = getNoDutyInfo(dateText);
+
+                if (!isWeekend(cursor) && !noDuty) {
+                    hoursLeft -= 8;
+                }
+
+                if (hoursLeft <= 0) {
+                    return cursor.toLocaleDateString(undefined, {
+                        month: 'short',
+                        day: 'numeric',
+                        year: 'numeric'
+                    });
+                }
+
+                cursor.setDate(cursor.getDate() + 1);
+                guard += 1;
+            }
+
+            return '-';
+        }
+
+        // Add a new record
+        async function addRecord() {
+            const dateInput = document.getElementById('dateInput').value;
+            const morningIn = document.getElementById('morningTimeIn').value;
+            const morningOut = document.getElementById('morningTimeOut').value;
+            const afternoonIn = document.getElementById('afternoonTimeIn').value;
+            const afternoonOut = document.getElementById('afternoonTimeOut').value;
+
+            if (!dateInput) {
+                alert('Please select a date');
+                return;
+            }
+
+            const noDutyInfo = getNoDutyInfo(dateInput);
+            if (noDutyInfo) {
+                alert(`No duty on this date: ${noDutyInfo.label}`);
+                return;
+            }
+
+            if (isMorningMeetingDate(dateInput) && (morningIn || morningOut)) {
+                alert('March 23 is afternoon only due to a morning meeting.');
+                return;
+            }
+
+            const morningHours = calculateHoursWithinWindow(morningIn, morningOut, 8 * 60, 12 * 60);
+            const afternoonHours = calculateHoursWithinWindow(afternoonIn, afternoonOut, 13 * 60, 17 * 60);
+            const totalDayHours = morningHours + afternoonHours;
+
+            if (totalDayHours === 0) {
+                alert('Please enter at least one time record');
+                return;
+            }
+
+            const record = {
+                date: dateInput,
+                morningIn: morningIn || null,
+                morningOut: morningOut || null,
+                morningHours: parseFloat(morningHours.toFixed(2)),
+                afternoonIn: afternoonIn || null,
+                afternoonOut: afternoonOut || null,
+                afternoonHours: parseFloat(afternoonHours.toFixed(2)),
+                totalHours: parseFloat(totalDayHours.toFixed(2))
+            };
+
+            try {
+                const response = await fetch(API_URL, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(record)
+                });
+
+                if (response.ok) {
+                    await loadRecords();
+                    updateStats();
+                    clearInputs();
+                } else {
+                    const error = await response.json();
+                    alert('Error: ' + error.error);
+                }
+            } catch (error) {
+                console.error('Error adding record:', error);
+                alert('Error saving record. Make sure the server is running.');
+            }
+        }
+
+        // Delete a record
+        async function deleteRecord(date) {
+            if (confirm('Are you sure you want to delete this record?')) {
+                try {
+                    const response = await fetch(`${API_URL}/${date}`, {
+                        method: 'DELETE'
+                    });
+
+                    if (response.ok) {
+                        await loadRecords();
+                        updateStats();
+                    } else {
+                        alert('Error deleting record');
+                    }
+                } catch (error) {
+                    console.error('Error deleting record:', error);
+                    alert('Error deleting record. Make sure the server is running.');
+                }
+            }
+        }
+
+        // Clear all records
+        async function clearAllRecords() {
+            if (confirm('Are you sure you want to delete all records? This action cannot be undone.')) {
+                try {
+                    const response = await fetch(API_URL, {
+                        method: 'DELETE'
+                    });
+
+                    if (response.ok) {
+                        await loadRecords();
+                        updateStats();
+                    } else {
+                        alert('Error clearing records');
+                    }
+                } catch (error) {
+                    console.error('Error clearing records:', error);
+                    alert('Error clearing records. Make sure the server is running.');
+                }
+            }
+        }
+
+        // Clear input fields
+        function clearInputs() {
+            document.getElementById('morningTimeIn').value = '';
+            document.getElementById('morningTimeOut').value = '';
+            document.getElementById('afternoonTimeIn').value = '';
+            document.getElementById('afternoonTimeOut').value = '';
+        }
+
+        function setTodayDate() {
+            const today = new Date().toISOString().split('T')[0];
+            document.getElementById('dateInput').value = today;
+            applyDateDefaults(today);
+        }
+
+        function applyDateDefaults(dateText) {
+            if (!dateText) return;
+
+            if (isMorningMeetingDate(dateText)) {
+                setHalfDayPM();
+            }
+        }
+
+        // Quick select functions for shift types
+        function setWholeDay() {
+            document.getElementById('morningTimeIn').value = '08:00';
+            document.getElementById('morningTimeOut').value = '12:00';
+            document.getElementById('afternoonTimeIn').value = '13:00';
+            document.getElementById('afternoonTimeOut').value = '17:00';
+        }
+
+        function setHalfDayAM() {
+            document.getElementById('morningTimeIn').value = '08:00';
+            document.getElementById('morningTimeOut').value = '12:00';
+            document.getElementById('afternoonTimeIn').value = '';
+            document.getElementById('afternoonTimeOut').value = '';
+        }
+
+        function setHalfDayPM() {
+            document.getElementById('morningTimeIn').value = '';
+            document.getElementById('morningTimeOut').value = '';
+            document.getElementById('afternoonTimeIn').value = '13:00';
+            document.getElementById('afternoonTimeOut').value = '17:00';
+        }
+
+        function clearTimes() {
+            document.getElementById('morningTimeIn').value = '';
+            document.getElementById('morningTimeOut').value = '';
+            document.getElementById('afternoonTimeIn').value = '';
+            document.getElementById('afternoonTimeOut').value = '';
+        }
+
+        function setViewMode(mode) {
+            currentViewMode = mode;
+
+            const tableBtn = document.getElementById('tableViewBtn');
+            const calendarBtn = document.getElementById('calendarViewBtn');
+            const calendarNav = document.getElementById('calendarNav');
+
+            tableBtn.classList.toggle('active', mode === 'table');
+            calendarBtn.classList.toggle('active', mode === 'calendar');
+            calendarNav.style.display = mode === 'calendar' ? 'flex' : 'none';
+
+            renderRecords();
+        }
+
+        function changeCalendarMonth(offset) {
+            currentCalendarDate = new Date(
+                currentCalendarDate.getFullYear(),
+                currentCalendarDate.getMonth() + offset,
+                1
+            );
+            renderRecords();
+            updateStats();
+        }
+
+        function renderCalendar() {
+            const container = document.getElementById('recordsContainer');
+            const calendarTitle = document.getElementById('calendarTitle');
+            const year = currentCalendarDate.getFullYear();
+            const month = currentCalendarDate.getMonth();
+
+            calendarTitle.textContent = currentCalendarDate.toLocaleDateString(undefined, {
+                month: 'long',
+                year: 'numeric'
+            });
+
+            const firstDay = new Date(year, month, 1).getDay();
+            const daysInMonth = new Date(year, month + 1, 0).getDate();
+
+            const recordsByDate = {};
+            records.forEach((record) => {
+                recordsByDate[record.date] = record;
+            });
+
+            const weekdayHeaders = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+
+            let html = '<div class="calendar-grid">';
+            weekdayHeaders.forEach((day) => {
+                html += `<div class="calendar-header">${day}</div>`;
+            });
+
+            for (let i = 0; i < firstDay; i++) {
+                html += '<div class="calendar-cell empty"></div>';
+            }
+
+            for (let day = 1; day <= daysInMonth; day++) {
+                const dateText = `${year}-${String(month + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
+                const record = recordsByDate[dateText];
+                const noDutyInfo = getNoDutyInfo(dateText);
+
+                html += `<div class="calendar-cell">`;
+                html += `<div class="calendar-day-number">${day}</div>`;
+
+                if (record) {
+                    html += `
+                        <div class="calendar-entry">
+                            <div class="hours">${record.totalHours.toFixed(2)} hrs</div>
+                            <div>${record.morningIn || '-'} - ${record.morningOut || '-'}</div>
+                            <div>${record.afternoonIn || '-'} - ${record.afternoonOut || '-'}</div>
+                        </div>
+                    `;
+                } else if (noDutyInfo) {
+                    const colorClass = noDutyInfo.color === 'green'
+                        ? 'calendar-entry-green'
+                        : noDutyInfo.color === 'red'
+                            ? 'calendar-entry-red'
+                            : 'calendar-entry-yellow';
+                    html += `
+                        <div class="calendar-entry ${colorClass}">
+                            <div class="hours">No Duty</div>
+                            <div>${noDutyInfo.label}</div>
+                        </div>
+                    `;
+                }
+
+                html += `</div>`;
+            }
+
+            html += '</div>';
+            container.innerHTML = html;
+        }
+
+        // Render records in table
+        function renderRecords() {
+            const container = document.getElementById('recordsContainer');
+
+            if (currentViewMode === 'calendar') {
+                renderCalendar();
+                return;
+            }
+            
+            const years = new Set(records.map((record) => new Date(`${record.date}T00:00:00`).getFullYear()));
+            years.add(new Date().getFullYear());
+
+            const noDutyDates = [];
+            years.forEach((year) => {
+                noDutyDates.push(...getAllNoDutyDates(year));
+            });
+
+            const mergedRows = [...records.map((record) => ({ type: 'record', date: record.date, record }))];
+
+            noDutyDates.forEach((date) => {
+                const hasRecord = records.some((record) => record.date === date);
+                if (!hasRecord) {
+                    mergedRows.push({ type: 'noDuty', date });
+                }
+            });
+
+            if (mergedRows.length === 0) {
+                container.innerHTML = '<div class="no-records">No records yet. Add your first entry!</div>';
+                return;
+            }
+
+            mergedRows.sort((a, b) => new Date(`${b.date}T00:00:00`) - new Date(`${a.date}T00:00:00`));
+
+            let html = `
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Date</th>
+                            <th>Morning In</th>
+                            <th>Morning Out</th>
+                            <th>Morning Hrs</th>
+                            <th>Afternoon In</th>
+                            <th>Afternoon Out</th>
+                            <th>Afternoon Hrs</th>
+                            <th>Total Hours</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+            `;
+
+            mergedRows.forEach((row) => {
+                if (row.type === 'record') {
+                    const record = row.record;
+                    html += `
+                        <tr>
+                            <td>${new Date(record.date).toLocaleDateString()}</td>
+                            <td>${record.morningIn || '-'}</td>
+                            <td>${record.morningOut || '-'}</td>
+                            <td>${record.morningHours.toFixed(2)}</td>
+                            <td>${record.afternoonIn || '-'}</td>
+                            <td>${record.afternoonOut || '-'}</td>
+                            <td>${record.afternoonHours.toFixed(2)}</td>
+                            <td><strong>${record.totalHours.toFixed(2)}</strong></td>
+                            <td><button class="delete-btn" onclick="deleteRecord('${record.date}')">Delete</button></td>
+                        </tr>
+                    `;
+                } else {
+                    const noDutyInfo = getNoDutyInfo(row.date);
+                    const labelClass = noDutyInfo && noDutyInfo.color === 'green'
+                        ? 'special-label special-label-green'
+                        : noDutyInfo && noDutyInfo.color === 'red'
+                            ? 'special-label special-label-red'
+                            : 'special-label special-label-yellow';
+                    const labelText = noDutyInfo ? `${noDutyInfo.label} (No Duty)` : 'No Duty';
+                    html += `
+                        <tr>
+                            <td>${new Date(`${row.date}T00:00:00`).toLocaleDateString()}</td>
+                            <td colspan="7"><span class="${labelClass}">${labelText}</span></td>
+                            <td>-</td>
+                        </tr>
+                    `;
+                }
+            });
+
+            html += `
+                    </tbody>
+                </table>
+            `;
+
+            container.innerHTML = html;
+        }
+
+        // Update statistics
+        function updateStats() {
+            const totalHours = records.reduce((sum, r) => sum + r.totalHours, 0);
+            const selectedMonthTotalHours = calculateMonthlyTotalHours(
+                currentCalendarDate.getFullYear(),
+                currentCalendarDate.getMonth()
+            );
+            const remainingHours = Math.max(0, TARGET_HOURS - totalHours);
+            const remainingDays = Math.ceil(remainingHours / 8);
+            const remainingWeeks = Math.ceil(remainingDays / 5);
+            const progressPercent = Math.min(100, (totalHours / TARGET_HOURS) * 100);
+            const expectedEndDate = calculateExpectedEndDate(remainingHours);
+
+            document.getElementById('totalHours').textContent = totalHours.toFixed(1);
+            document.getElementById('monthTotalHours').textContent = selectedMonthTotalHours.toFixed(1);
+            document.getElementById('remainingHours').textContent = remainingHours.toFixed(1);
+            document.getElementById('expectedEndDate').textContent = expectedEndDate;
+            
+            let daysText = remainingDays > 0 ? remainingDays.toString() : '✓ Done!';
+            document.getElementById('remainingDays').textContent = daysText;
+
+            const progressFill = document.getElementById('progressFill');
+            progressFill.style.width = progressPercent + '%';
+            progressFill.textContent = progressPercent.toFixed(1) + '%';
+
+            const goalMessage = document.getElementById('goalMessage');
+            if (totalHours >= TARGET_HOURS) {
+                goalMessage.innerHTML = `
+                    <div class="goal-message goal-reached">
+                        🎉 Congratulations! You've reached your target of ${TARGET_HOURS} hours!
+                        <br>Total Hours: ${totalHours.toFixed(1)} hours (${(totalHours - TARGET_HOURS).toFixed(1)} hours above target)
+                    </div>
+                `;
+            } else {
+                goalMessage.innerHTML = `
+                    <div class="goal-message goal-in-progress">
+                        📌 ${remainingHours.toFixed(1)} hours remaining | ~${remainingDays} days (${remainingWeeks} weeks) at 8 hours/day
+                    </div>
+                `;
+            }
+        }
+
+        // Initialize
+        loadProfileInputs();
+        setTodayDate();
+        document.getElementById('dateInput').addEventListener('change', (event) => {
+            applyDateDefaults(event.target.value);
+        });
+        document.getElementById('employeeNameInput').addEventListener('input', saveProfileInputs);
+        document.getElementById('companyInput').addEventListener('input', saveProfileInputs);
+        setViewMode('calendar');
+        loadRecords();
+    </script>
+</body>
+</html>
