@@ -692,22 +692,24 @@
                         <span class="month-total-value">${escapeHtml(monthlyTotalHours.toFixed(2))} hrs</span>
                     </div>
 
-                    <table class="dtr-table">
-                        <thead>
-                            <tr>
-                                <th style="width: 15%">Date</th>
-                                <th style="width: 12%">AM In</th>
-                                <th style="width: 12%">AM Out</th>
-                                <th style="width: 12%">PM In</th>
-                                <th style="width: 12%">PM Out</th>
-                                <th style="width: 10%">Total Hrs</th>
-                                <th style="width: 17%">Remarks</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            ${rowHtml}
-                        </tbody>
-                    </table>
+                    <div class="dtr-table-wrap">
+                        <table class="dtr-table">
+                            <thead>
+                                <tr>
+                                    <th style="width: 15%">Date</th>
+                                    <th style="width: 12%">AM In</th>
+                                    <th style="width: 12%">AM Out</th>
+                                    <th style="width: 12%">PM In</th>
+                                    <th style="width: 12%">PM Out</th>
+                                    <th style="width: 10%">Total Hrs</th>
+                                    <th style="width: 17%">Remarks</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                ${rowHtml}
+                            </tbody>
+                        </table>
+                    </div>
                 </section>
             `;
         }
@@ -723,6 +725,7 @@
             });
             const rows = buildDtrMonthRows(year, monthIndex);
             const monthlyTotalHours = calculateMonthlyTotalHours(year, monthIndex);
+            const printSheetClass = monthIndex === 3 ? 'print-sheet april-layout' : 'print-sheet';
             const printWindow = window.open('', '_blank', 'width=1400,height=900');
 
             if (!printWindow) {
@@ -768,8 +771,10 @@
                         .dtr-copy {
                             border: 1px solid #444;
                             padding: 10px 10px 12px;
-                            min-height: 8.5in;
+                            min-height: 9.2in;
                             position: relative;
+                            display: flex;
+                            flex-direction: column;
                         }
 
                         .copy-label {
@@ -842,6 +847,13 @@
                             border-collapse: collapse;
                             table-layout: fixed;
                             font-size: 9px;
+                            height: 100%;
+                        }
+
+                        .dtr-table-wrap {
+                            flex: 1;
+                            display: flex;
+                            margin-top: 2px;
                         }
 
                         .dtr-table th,
@@ -857,6 +869,29 @@
                             font-size: 9px;
                             font-weight: 700;
                             background: #efefef;
+                        }
+
+                        .dtr-table tbody tr {
+                            height: calc((100% - 24px) / 31);
+                        }
+
+                        .april-layout .dtr-header {
+                            margin-bottom: 6px;
+                            padding-top: 6px;
+                        }
+
+                        .april-layout .employee-row {
+                            margin: 6px 0 8px;
+                            padding-bottom: 4px;
+                        }
+
+                        .april-layout .month-total-row {
+                            margin: 0 0 8px;
+                            padding-bottom: 4px;
+                        }
+
+                        .april-layout .dtr-table tbody tr {
+                            height: calc((100% - 24px) / 30);
                         }
 
                         .date-cell {
@@ -880,13 +915,9 @@
                             text-align: center;
                         }
 
-                        .signatory-block.cortez {
-                            margin-top: 65px;
-                        }
-
                         .signatory-line {
                             border-top: 1px solid #444;
-                            margin: 30px 18px 8px;
+                            margin: 22px 18px 8px;
                         }
 
                         .signatory-name {
@@ -911,7 +942,7 @@
                     </style>
                 </head>
                 <body>
-                    <div class="print-sheet">
+                    <div class="${printSheetClass}">
                         <div class="page">
                             ${buildPrintCopyHtml({ employeeName, companyName, monthLabel, monthlyTotalHours, rows, copyLabel: 'Copy 1' })}
                             ${buildPrintCopyHtml({ employeeName, companyName, monthLabel, monthlyTotalHours, rows, copyLabel: 'Copy 2' })}
@@ -924,15 +955,9 @@
                                 <div class="signatory-title">OJT Employee</div>
                             </div>
 
-                            <div class="signatory-block cortez">
-                                <div class="signatory-line"></div>
-                                <div class="signatory-name">MR. REY T. CORTEZ</div>
-                                <div class="signatory-title">Department Head</div>
-                            </div>
-
                             <div class="signatory-block">
                                 <div class="signatory-line"></div>
-                                <div class="signatory-name">MR. DANJHO ORBITA</div>
+                                <div class="signatory-name">MR. REY T. CORTEZ, MIT</div>
                                 <div class="signatory-title">OJT Supervisor</div>
                             </div>
                         </div>
